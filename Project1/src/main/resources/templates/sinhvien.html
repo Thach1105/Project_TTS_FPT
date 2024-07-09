@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản Lý Sinh Viên</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            margin: 0;
+            position: relative;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            position: relative;
+        }
+        .home-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        form {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            margin-right: 10px;
+            width: calc(20% - 10px);
+        }
+        input[type="submit"] {
+            padding: 5px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>
+    Quản Lý Sinh Viên
+    <a href="/" class="home-icon">
+        HOME
+    </a>
+</h1>
+<div class="container">
+    <form style="margin-top: 16px" th:action="@{/student/add}" method="post">
+        <input type="text" name="studentCode" placeholder="Mã Sinh Viên" required>
+        <input type="text" name="name" placeholder="Tên" required>
+        <input type="date" name="dob" placeholder="Ngày Sinh" required>
+        <input type="text" name="address" placeholder="Địa Chỉ" required>
+        <input type="text" name="email" placeholder="Email" required>
+        <input type="submit" value="Thêm Sinh Viên">
+    </form>
+    <table>
+        <thead>
+        <tr>
+            <th>Mã Sinh Viên</th>
+            <th>Tên</th>
+            <th>Ngày Sinh</th>
+            <th>Địa Chỉ</th>
+            <th>Email</th>
+            <th>Hành Động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="student : ${students}">
+            <td th:text="${student.studentCode}"></td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.dob}"></td>
+            <td th:text="${student.address}"></td>
+            <td th:text="${student.email}"></td>
+            <td>
+                <a th:href="@{/student/edit-id={id}(id=${student.getStudentId()})}">Chi tiết</a> |
+                <a th:href="@{/student/delete-id={id}(id=${student.getStudentId})}" onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

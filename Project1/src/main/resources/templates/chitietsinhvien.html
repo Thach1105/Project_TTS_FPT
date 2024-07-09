@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chỉnh Sửa Sinh Viên</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            margin: 0;
+            position: relative;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            position: relative;
+        }
+        .home-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-group input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .form-group input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .table-container {
+            margin-top: 40px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        a.delete-link {
+            color: #d9534f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a.delete-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<h1>
+    Chỉnh Sửa Thông Tin Sinh Viên
+    <a href="/" class="home-icon">
+       HOME
+    </a>
+</h1>
+<div class="container">
+    <div class="form-container">
+        <form th:action="@{/student/edit-id={id}(id=${student.getStudentId()})}" method="post">
+            <input type="hidden" name="studentId" th:value="${student.studentId}">
+            <div class="form-group">
+                <label for="studentCode">Mã Sinh Viên</label>
+                <input type="text" id="studentCode" name="studentCode" th:value="${student.studentCode}" required>
+            </div>
+            <div class="form-group">
+                <label for="name">Tên</label>
+                <input type="text" id="name" name="name" th:value="${student.name}" required>
+            </div>
+            <div class="form-group">
+                <label for="dob">Ngày Sinh</label>
+                <input type="date" id="dob" name="dob" th:value="${student.dob}" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Địa Chỉ</label>
+                <input type="text" id="address" name="address" th:value="${student.address}" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" th:value="${student.email}" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Cập Nhật" onclick="return confirm('Bạn có chắc chắn muốn sửa thông tin không?')">
+            </div>
+        </form>
+    </div>
+    <div class="form-container">
+        <h2>Đăng Ký Môn Học</h2>
+        <form th:action="@{/register/add-course}" method="post">
+            <div class="form-group">
+                <label for="courseId">Chọn Khóa Học</label>
+                <select id="courseId" name="courseId" required>
+                    <option th:each="course : ${allCourses}" th:value="${course.courseId}" th:text="${ course.courseCode + ' [' + course.name + ']'}"></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="studentId" th:value="${student.studentId}">
+                <input type="submit" value="Đăng Ký" onclick="return confirm('Xác nhận đăng ký?')">
+            </div>
+        </form>
+    </div>
+    <div class="table-container">
+        <h2>Danh Sách Khóa Học Đã Được Đăng Ký</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Mã Khóa Học</th>
+                <th>Tên Khóa Học</th>
+                <th>Số tín chỉ</th>
+                <th>Xóa đăng ký</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="enrollment : ${student.enrollmentsList}">
+                <td th:text="${enrollment.course.courseCode}"></td>
+                <td th:text="${enrollment.course.name}"></td>
+                <td th:text="${enrollment.course.credit}"></td>
+                <td>
+                    <a th:href="@{/register/remove-enrollmentId={eId}(eId=${enrollment.enrollment_id})}"
+                       class="delete-link"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa khóa học này khỏi sinh viên không?')">Xóa</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
